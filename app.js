@@ -4,7 +4,7 @@ const { main } = require('./src/index');
 const app = express();
 const port = 5000;
 
-app.get('/webhook', (req, res) => {
+app.get('*', (req, res) => {
     main(req, res)
 })
 
