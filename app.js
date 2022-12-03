@@ -2,7 +2,7 @@ const express = require('express');
 const { main } = require('./src/index');
 
 const app = express();
-const port = 5000;
+const port = 8000;
 
 app.get('*', (req, res) => {
     main(req, res)

@@ -1,20 +1,20 @@
 "use strict";
 
 // Imports dependencies
-const axios = require("axios").default;
+const axios = require("axios");
 
-exports.main = function main(req, res) {
+exports.main = async function main(req, res) {
     const path = req.path;
     switch (path) {
         case '/webhook':
-            webhook(req, res);
+            await webhook(req, res);
             break;
         default:
             res.status(200).send('Server is working');
     }
 }
 
-function webhook(req, res) {
+async function webhook(req, res) {
     if (req.method === 'POST') {
         // Access token for your app
         // (copy token from DevX getting started page
@@ -58,6 +58,10 @@ function webhook(req, res) {
             res.sendStatus(404);
         }
     } else if (req.method === 'GET') {
+        String.prototype.replace()
+        const date = (new Date()).toISOString().split("T")[0].split("-").join("");
+        const content = await axios.get(`https://feed.evangelizo.org/v2/reader.php?date=${date}&type=all&lang=SP`);
+        return res.send(content.data);
         // Accepts GET requests at the /webhook endpoint. You need this URL to setup webhook initially.
         // info on verification request payload: https://developers.facebook.com/docs/graph-api/webhooks/getting-started#verification-requests 
         const verify_token = process.env.VERIFY_TOKEN;
