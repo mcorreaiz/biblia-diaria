@@ -8,8 +8,9 @@
     "start": "node --experimental-modules ../app.js"
   },
   "dependencies": {
+    "@google-cloud/functions-framework": "^3.0.0",
     "axios": "1.0.0-alpha.1",
-    "@google-cloud/functions-framework": "^3.0.0"
+    "html-to-text": "^9.0.0"
   },
   "author": "mcorreaiz",
   "license": "MIT",

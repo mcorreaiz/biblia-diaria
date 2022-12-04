@@ -2,6 +2,8 @@
 
 // Imports dependencies
 const axios = require("axios");
+const { htmlToText } = require('html-to-text');
+
 
 exports.main = async function main(req, res) {
     const path = req.path;
@@ -37,20 +39,23 @@ async function webhook(req, res) {
                     req.body.entry[0].changes[0].value.metadata.phone_number_id;
                 let from = req.body.entry[0].changes[0].value.messages[0].from; // extract the phone number from the webhook payload
                 let msg_body = req.body.entry[0].changes[0].value.messages[0].text.body; // extract the message text from the webhook payload
-                axios({
-                    method: "POST", // Required, HTTP method, a string, e.g. POST, GET
-                    url:
-                        "https://graph.facebook.com/v12.0/" +
-                        phone_number_id +
-                        "/messages?access_token=" +
-                        token,
-                    data: {
-                        messaging_product: "whatsapp",
-                        to: from,
-                        text: { body: "Ack: " + msg_body },
-                    },
-                    headers: { "Content-Type": "application/json" },
-                });
+                if (msg_body === "biblia") {
+                    const response = await getEvangelio();
+                    axios({
+                        method: "POST", // Required, HTTP method, a string, e.g. POST, GET
+                        url:
+                            "https://graph.facebook.com/v12.0/" +
+                            phone_number_id +
+                            "/messages?access_token=" +
+                            token,
+                        data: {
+                            messaging_product: "whatsapp",
+                            to: from,
+                            text: { body: response },
+                        },
+                        headers: { "Content-Type": "application/json" },
+                    })
+                }
             }
             res.sendStatus(200);
         } else {
@@ -58,10 +63,7 @@ async function webhook(req, res) {
             res.sendStatus(404);
         }
     } else if (req.method === 'GET') {
-        String.prototype.replace()
-        const date = (new Date()).toISOString().split("T")[0].split("-").join("");
-        const content = await axios.get(`https://feed.evangelizo.org/v2/reader.php?date=${date}&type=all&lang=SP`);
-        return res.send(content.data);
+        return res.send(await getEvangelio());
         // Accepts GET requests at the /webhook endpoint. You need this URL to setup webhook initially.
         // info on verification request payload: https://developers.facebook.com/docs/graph-api/webhooks/getting-started#verification-requests 
         const verify_token = process.env.VERIFY_TOKEN;
@@ -86,3 +88,29 @@ async function webhook(req, res) {
     }
 }
 
+async function getEvangelio(_date=null) {
+    const date = _date || (new Date()).toISOString().split("T")[0].replace(/-/g, "");
+    const content = await axios.get(`https://feed.evangelizo.org/v2/reader.php?date=${date}&type=all&lang=SP`);
+    const replace = "*~"
+    const converted = htmlToText(content.data, {
+        selectors: [
+          { selector: 'br', format: 'inlineString', options: { string: replace } }
+        ],
+        wordwrap: false
+    });
+    console.log(converted)
+    let readings = converted.split(replace+replace+replace);
+    const [title, firstReading] = readings[0].split(replace+replace);
+    readings[0] = firstReading;
+    console.log({readings})
+    readings = readings.slice(0,readings.length - 1).map(reading => {
+        const [title, ...readingBody] = reading.split(replace);
+        return `${enbold(title)}\n${readingBody.map(r => r.trim()).join("\n")}`
+    });
+    console.log(enbold(title)+'\n\n'+readings.join("\n\n\n"));
+    return enbold(title)+'\n\n'+readings.join("\n\n\n")
+}
+
+function enbold(string) {
+    return "**" + string + "**";
+}
