@@ -41,7 +41,7 @@ async function webhook(req, res) {
                     req.body.entry[0].changes[0].value.metadata.phone_number_id;
                 let from = req.body.entry[0].changes[0].value.messages[0].from; // extract the phone number from the webhook payload
                 let msg_body = req.body.entry[0].changes[0].value.messages[0].text.body; // extract the message text from the webhook payload
-                if (msg_body === "biblia") {
+                if (msg_body === "Biblia") {
                     const response = await getEvangelio();
                     await axios({
                         method: "POST", // Required, HTTP method, a string, e.g. POST, GET
@@ -54,6 +54,22 @@ async function webhook(req, res) {
                             messaging_product: "whatsapp",
                             to: from,
                             text: { body: response },
+                        },
+                        headers: { "Content-Type": "application/json" },
+                    })
+                }
+                else {
+                    await axios({
+                        method: "POST", // Required, HTTP method, a string, e.g. POST, GET
+                        url:
+                            "https://graph.facebook.com/v15.0/" +
+                            phone_number_id +
+                            "/messages?access_token=" +
+                            token,
+                        data: {
+                            messaging_product: "whatsapp",
+                            to: from,
+                            text: { body: "Escríbeme 'Biblia' para recibir las lecturas de hoy!" },
                         },
                         headers: { "Content-Type": "application/json" },
                     })
