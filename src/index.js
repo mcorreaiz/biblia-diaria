@@ -33,7 +33,14 @@ async function webhook(req, res) {
             if (
                 req.body.entry &&
                 req.body.entry[0].changes &&
-                req.body.entry[0].changes[0] &&
+                req.body.entry[0].changes[0]) {
+                    if (
+                        req.body.entry[0].changes[0].value.statuses &&
+                        req.body.entry[0].changes[0].value.statuses[0]
+                        ) {
+                            return res.sendStatus(200);
+                        }
+                } else if (
                 req.body.entry[0].changes[0].value.messages &&
                 req.body.entry[0].changes[0].value.messages[0]
             ) {
