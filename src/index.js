@@ -11,6 +11,8 @@ exports.main = async function main(req, res) {
         case '/webhook':
             await webhook(req, res);
             break;
+        case '/test':
+            return res.send(await getEvangelio());
         default:
             res.status(200).send('Server is working');
     }
@@ -41,10 +43,10 @@ async function webhook(req, res) {
                 let msg_body = req.body.entry[0].changes[0].value.messages[0].text.body; // extract the message text from the webhook payload
                 if (msg_body === "biblia") {
                     const response = await getEvangelio();
-                    axios({
+                    await axios({
                         method: "POST", // Required, HTTP method, a string, e.g. POST, GET
                         url:
-                            "https://graph.facebook.com/v12.0/" +
+                            "https://graph.facebook.com/v15.0/" +
                             phone_number_id +
                             "/messages?access_token=" +
                             token,
@@ -57,13 +59,12 @@ async function webhook(req, res) {
                     })
                 }
             }
-            res.sendStatus(200);
+            return res.sendStatus(200);
         } else {
             // Return a '404 Not Found' if event is not from a WhatsApp API
-            res.sendStatus(404);
+            return res.sendStatus(404);
         }
     } else if (req.method === 'GET') {
-        return res.send(await getEvangelio());
         // Accepts GET requests at the /webhook endpoint. You need this URL to setup webhook initially.
         // info on verification request payload: https://developers.facebook.com/docs/graph-api/webhooks/getting-started#verification-requests 
         const verify_token = process.env.VERIFY_TOKEN;
@@ -112,5 +113,5 @@ async function getEvangelio(_date=null) {
 }
 
 function enbold(string) {
-    return "**" + string + "**";
+    return "*" + string + "*";
 }
