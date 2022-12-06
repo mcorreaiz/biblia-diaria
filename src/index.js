@@ -74,11 +74,11 @@ async function webhook(req, res) {
                         headers: { "Content-Type": "application/json" },
                     })
                 }
+                res.sendStatus(200);
             }
-            return res.sendStatus(200);
         } else {
             // Return a '404 Not Found' if event is not from a WhatsApp API
-            return res.sendStatus(404);
+            res.sendStatus(404);
         }
     } else if (req.method === 'GET') {
         // Accepts GET requests at the /webhook endpoint. You need this URL to setup webhook initially.
