@@ -9,8 +9,7 @@ exports.main = async function main(req, res) {
     const path = req.path;
     switch (path) {
         case '/webhook':
-            await webhook(req, res);
-            break;
+            return await webhook(req, res);
         case '/test':
             return res.send(await getEvangelio());
         default:
@@ -38,9 +37,8 @@ async function webhook(req, res) {
                         req.body.entry[0].changes[0].value.statuses &&
                         req.body.entry[0].changes[0].value.statuses[0]
                         ) {
-                            return res.sendStatus(200);
-                        }
-                } else if (
+                            return res.sendStatus(400);
+                        } else if (
                 req.body.entry[0].changes[0].value.messages &&
                 req.body.entry[0].changes[0].value.messages[0]
             ) {
@@ -81,11 +79,12 @@ async function webhook(req, res) {
                         headers: { "Content-Type": "application/json" },
                     })
                 }
-                res.sendStatus(200);
+                return res.sendStatus(200);
             }
+        }
         } else {
             // Return a '404 Not Found' if event is not from a WhatsApp API
-            res.sendStatus(404);
+            return res.sendStatus(404);
         }
     } else if (req.method === 'GET') {
         // Accepts GET requests at the /webhook endpoint. You need this URL to setup webhook initially.
