@@ -5,7 +5,7 @@ const axios = require("axios");
 const { htmlToText } = require("html-to-text");
 const functions = require("@google-cloud/functions-framework");
 
-exports.main = async function main(req, res) {
+async function main(req, res) {
   const path = req.path;
   switch (path) {
     case "/webhook":
@@ -15,9 +15,8 @@ exports.main = async function main(req, res) {
     default:
       res.status(200).send("Server is working");
   }
-};
+}
 
-functions.http("main", main);
 async function webhook(req, res) {
   if (req.method === "POST") {
     // Access token for your app
@@ -133,3 +132,5 @@ async function getEvangelio(_date = null) {
 function enbold(string) {
   return "*" + string.trim() + "*";
 }
+functions.http("main", main);
+exports.main = main;
