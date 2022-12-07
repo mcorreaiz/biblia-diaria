@@ -10,8 +10,10 @@ function main(req, res) {
   switch (path) {
     case "/webhook":
       webhook(req, res);
+      break;
     case "/test":
       res.send(getEvangelio());
+      break;
     default:
       res.status(200).send("Server is working");
   }
@@ -40,22 +42,20 @@ function webhook(req, res) {
         let from = req.body.entry[0].changes[0].value.messages[0].from; // extract the phone number from the webhook payload
         let msg_body = req.body.entry[0].changes[0].value.messages[0].text.body; // extract the message text from the webhook payload
         if (msg_body === "Biblia") {
-          getEvangelio().then((evangelio) =>
-            axios({
-              method: "POST", // Required, HTTP method, a string, e.g. POST, GET
-              url:
-                "https://graph.facebook.com/v15.0/" +
-                phone_number_id +
-                "/messages?access_token=" +
-                token,
-              data: {
-                messaging_product: "whatsapp",
-                to: from,
-                text: { body: evangelio },
-              },
-              headers: { "Content-Type": "application/json" },
-            })
-          );
+          axios({
+            method: "POST", // Required, HTTP method, a string, e.g. POST, GET
+            url:
+              "https://graph.facebook.com/v15.0/" +
+              phone_number_id +
+              "/messages?access_token=" +
+              token,
+            data: {
+              messaging_product: "whatsapp",
+              to: from,
+              text: { body: "evangelio" },
+            },
+            headers: { "Content-Type": "application/json" },
+          });
         } else {
           axios({
             method: "POST", // Required, HTTP method, a string, e.g. POST, GET
@@ -105,7 +105,7 @@ function webhook(req, res) {
   }
 }
 
-async function getEvangelio(_date = null) {
+function getEvangelio(_date = null) {
   const date =
     _date || new Date().toISOString().split("T")[0].replace(/-/g, "");
   return axios
