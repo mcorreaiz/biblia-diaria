@@ -3,6 +3,7 @@
 // Imports dependencies
 const axios = require("axios");
 const { htmlToText } = require("html-to-text");
+const functions = require("@google-cloud/functions-framework");
 
 exports.main = async function main(req, res) {
   const path = req.path;
@@ -16,6 +17,7 @@ exports.main = async function main(req, res) {
   }
 };
 
+functions.http("main", main);
 async function webhook(req, res) {
   if (req.method === "POST") {
     // Access token for your app
