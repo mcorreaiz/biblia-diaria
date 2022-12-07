@@ -5,13 +5,13 @@ const axios = require("axios");
 const { htmlToText } = require("html-to-text");
 const functions = require("@google-cloud/functions-framework");
 
-async function main(req, res) {
+function main(req, res) {
   const path = req.path;
   switch (path) {
     case "/webhook":
-      return await webhook(req, res);
+      webhook(req, res);
     case "/test":
-      return res.send(await getEvangelio());
+      res.send(getEvangelio());
     default:
       res.status(200).send("Server is working");
   }
