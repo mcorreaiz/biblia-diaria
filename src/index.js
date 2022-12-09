@@ -41,6 +41,7 @@ exports.webhookPost = function (req, res) {
           headers: { "Content-Type": "application/json" },
         });
       } else {
+        console.log({ msg_body });
         axios({
           method: "POST", // Required, HTTP method, a string, e.g. POST, GET
           url:
@@ -58,8 +59,8 @@ exports.webhookPost = function (req, res) {
           headers: { "Content-Type": "application/json" },
         });
       }
+      res.status(200).send("OK");
     }
-    res.status(200).send("OK");
   } else {
     // Return a '404 Not Found' if event is not from a WhatsApp API
     res.sendStatus(404);
