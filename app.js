@@ -1,8 +1,11 @@
 const express = require("express");
 const functions = require("@google-cloud/functions-framework");
+const body_parser = require("body-parser");
 const { webhookGet, webhookPost, test } = require("./src");
 
 const app = express();
+
+app.use(body_parser.json());
 
 app.get("/webhook", webhookGet);
 
