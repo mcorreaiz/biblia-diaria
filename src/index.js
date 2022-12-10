@@ -5,6 +5,7 @@ const axios = require("axios");
 const { htmlToText } = require("html-to-text");
 
 exports.webhookPost = function (req, res) {
+  let body = req.body;
   // Access token for your app
   // (copy token from DevX getting started page
   // and save it as environment variable into the .env file)
@@ -53,14 +54,15 @@ exports.webhookPost = function (req, res) {
             messaging_product: "whatsapp",
             to: from,
             text: {
-              body: "Escríbeme 'Biblia' para recibir las lecturas de hoy!",
+              body: "Ack " + msg_body,
+              //body: "Escríbeme 'Biblia' para recibir las lecturas de hoy!",
             },
           },
           headers: { "Content-Type": "application/json" },
         });
       }
     }
-    res.status(200).send("OK");
+    res.sendStatus(200);
   } else {
     // Return a '404 Not Found' if event is not from a WhatsApp API
     res.sendStatus(404);
