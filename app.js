@@ -3,7 +3,7 @@ const functions = require("@google-cloud/functions-framework");
 const body_parser = require("body-parser");
 const { webhookGet, webhookPost, test } = require("./src");
 
-const app = express();
+const app = express(body_parser.json());
 
 app.use(body_parser.json());
 
