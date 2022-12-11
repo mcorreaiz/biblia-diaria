@@ -4,11 +4,7 @@
 const axios = require("axios");
 const { htmlToText } = require("html-to-text");
 
-exports.webhookPost = function (req, res) {
-  let body = req.body;
-  // Access token for your app
-  // (copy token from DevX getting started page
-  // and save it as environment variable into the .env file)
+exports.webhookPost = async function (req, res) {
   const token = process.env.WHATSAPP_TOKEN;
 
   // info on WhatsApp text message payload: https://developers.facebook.com/docs/whatsapp/cloud-api/webhooks/payload-examples#text-messages
@@ -37,7 +33,7 @@ exports.webhookPost = function (req, res) {
           data: {
             messaging_product: "whatsapp",
             to: from,
-            text: { body: "evangelio" },
+            text: { body: await getEvangelio() },
           },
           headers: { "Content-Type": "application/json" },
         });
@@ -54,8 +50,7 @@ exports.webhookPost = function (req, res) {
             messaging_product: "whatsapp",
             to: from,
             text: {
-              body: "Ack " + msg_body,
-              //body: "Escríbeme 'Biblia' para recibir las lecturas de hoy!",
+              body: "Escríbeme 'Biblia' para recibir las lecturas de hoy!",
             },
           },
           headers: { "Content-Type": "application/json" },
@@ -121,7 +116,6 @@ function getEvangelio(_date = null) {
       let readings = converted.split(replace + replace + replace);
       const [title, firstReading] = readings[0].split(replace + replace);
       readings[0] = firstReading;
-      console.log({ readings });
       readings = readings.slice(0, readings.length - 1).map((reading) => {
         const [title, ...readingBody] = reading.split(replace);
         return `${enbold(title)}\n${readingBody
