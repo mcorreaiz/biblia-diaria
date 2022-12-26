@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "functions-framework --target=main"
+    "start": "NODE_ENV=dev functions-framework --target=main"
   },
   "repository": {
     "type": "git",

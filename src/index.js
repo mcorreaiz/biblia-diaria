@@ -1,7 +1,9 @@
 "use strict";
 
 // Imports dependencies
-require("dotenv").config();
+if (process.env.NODE_ENV === "dev") {
+  require("dotenv").config();
+}
 const { sendReply, MESSAGES, BUTTON_REPLY } = require("./replies");
 const { isWhatsAppMessage, isWhatsAppRequest, genLecturas } = require("./util");
 
