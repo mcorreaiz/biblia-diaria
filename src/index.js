@@ -27,6 +27,7 @@ exports.webhookPost = async function (req, res) {
               sendReply(phone_number_id, token, from, MESSAGES.LECTURAS);
               break;
             case BUTTON_REPLY.ROSARIO:
+              sendReply(phone_number_id, token, from, MESSAGES.ROSARIO);
               break;
             default:
               break;

@@ -19,7 +19,7 @@ const mainReplyButtonsDataFn = (recipient) => {
     interactive: {
       type: "button",
       body: {
-        text: "Qué necesitas?",
+        text: "Hola, soy un robot que te ayuda a rezar. Qué necesitas?",
       },
       action: {
         buttons: [
@@ -51,6 +51,14 @@ const lecturasDataFn = async (recipient) => {
   };
 };
 
+const rosarioDataFn = async (recipient) => {
+  return {
+    messaging_product: "whatsapp",
+    to: recipient,
+    text: { body: "Opcion no disponible por ahora. Lo siento!" },
+  };
+};
+
 exports.sendReply = async (phone_id, token, recipient, message) => {
   let dataFn;
   switch (message) {
@@ -59,6 +67,9 @@ exports.sendReply = async (phone_id, token, recipient, message) => {
       break;
     case this.MESSAGES.LECTURAS:
       dataFn = lecturasDataFn;
+      break;
+    case this.MESSAGES.ROSARIO:
+      dataFn = rosarioDataFn;
       break;
     default:
       console.error("[sendAxios] Invalid message: ", message);
