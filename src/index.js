@@ -1,7 +1,8 @@
 "use strict";
 
 // Imports dependencies
-const { sendAxios, MESSAGES, BUTTON_REPLY } = require("./replies");
+require("dotenv").config();
+const { sendReply, MESSAGES, BUTTON_REPLY } = require("./replies");
 const { isWhatsAppMessage, isWhatsAppRequest, genLecturas } = require("./util");
 
 exports.webhookPost = async function (req, res) {
@@ -18,19 +19,23 @@ exports.webhookPost = async function (req, res) {
         if (msg.type === "text") {
           let msg_body = msg?.text?.body;
           console.log({ msg_body });
-          sendAxios(phone_number_id, token, from, MESSAGES.MAIN_REPLY_BUTTONS);
+          sendReply(phone_number_id, token, from, MESSAGES.MAIN_REPLY_BUTTONS);
         } else if (msg.type === "interactive") {
+          console.log(msg.interactive.button_reply.id);
           switch (msg.interactive.button_reply.id) {
             case BUTTON_REPLY.LECTURAS:
-              sendAxios(phone_number_id, token, from, MESSAGES.LECTURAS);
-              console.log("lecturas");
+              sendReply(phone_number_id, token, from, MESSAGES.LECTURAS);
               break;
             case BUTTON_REPLY.ROSARIO:
-              console.log("rosario");
               break;
             default:
               break;
           }
+        } else {
+          console.error(
+            "[webhookPost] Not currently accepted message type: ",
+            msg.type
+          );
         }
       });
     }

@@ -51,13 +51,7 @@ const lecturasDataFn = async (recipient) => {
   };
 };
 
-exports.sendAxios = async (
-  phone_id,
-  token,
-  recipient,
-  message,
-  method = "POST"
-) => {
+exports.sendReply = async (phone_id, token, recipient, message) => {
   let dataFn;
   switch (message) {
     case this.MESSAGES.MAIN_REPLY_BUTTONS:
@@ -67,17 +61,18 @@ exports.sendAxios = async (
       dataFn = lecturasDataFn;
       break;
     default:
-      console.error("sendAxios: invalid message: ", message);
+      console.error("[sendAxios] Invalid message: ", message);
       return;
   }
+  const data = await dataFn(recipient);
   axios({
-    method: method, // Required, HTTP method, a string, e.g. POST, GET
+    method: "POST", // Required, HTTP method, a string, e.g. POST, GET
     url:
       "https://graph.facebook.com/v15.0/" +
       phone_id +
       "/messages?access_token=" +
       token,
-    data: await dataFn(recipient),
+    data,
     headers: { "Content-Type": "application/json" },
   });
 };
