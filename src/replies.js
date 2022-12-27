@@ -1,4 +1,5 @@
 const axios = require("axios");
+const { MISTERIOS } = require("./rosario");
 const { genLecturas } = require("./util");
 
 exports.BUTTON_REPLY = Object.freeze({
@@ -52,10 +53,31 @@ const lecturasDataFn = async (recipient) => {
 };
 
 const rosarioDataFn = async (recipient) => {
+  const day = new Date().getDay();
+  let body;
+  switch (day) {
+    case 1:
+    case 6:
+      body = MISTERIOS.GOZO;
+      break;
+    case 2:
+    case 5:
+      body = MISTERIOS.DOLOR;
+      break;
+    case 3:
+    case 0:
+      body = MISTERIOS.GLORIA;
+      break;
+    case 4:
+      body = MISTERIOS.LUZ;
+      break;
+    default:
+      console.error("[rosarioDataFn] Invalid day: ", day);
+  }
   return {
     messaging_product: "whatsapp",
     to: recipient,
-    text: { body: "Opcion no disponible por ahora. Lo siento!" },
+    text: { body },
   };
 };
 
