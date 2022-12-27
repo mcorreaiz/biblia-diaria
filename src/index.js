@@ -32,13 +32,14 @@ exports.webhookPost = async function (req, res) {
               sendReply(phone_number_id, token, from, MESSAGES.ROSARIO);
               break;
             default:
+              console.error(
+                "[webhookPost] Invalid button reply: ",
+                msg.interactive.button_reply
+              );
               break;
           }
         } else {
-          console.error(
-            "[webhookPost] Not currently accepted message type: ",
-            msg.type
-          );
+          console.error("[webhookPost] Invalid message type: ", msg.type);
         }
       });
     }
