@@ -3,7 +3,13 @@ const { htmlToText } = require("html-to-text");
 
 exports.genLecturas = function (_date = null) {
   const date =
-    _date || new Date().toISOString().split("T")[0].replace(/-/g, "");
+    _date ||
+    new Date()
+      .toLocaleString("es-CL", { timeZone: "America/Santiago" })
+      .split(",")[0]
+      .split("-")
+      .reverse()
+      .join("");
   return axios
     .get(
       `https://feed.evangelizo.org/v2/reader.php?date=${date}&type=all&lang=SP`
